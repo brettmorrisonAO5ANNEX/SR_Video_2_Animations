@@ -38,4 +38,39 @@ class PartThree(Scene):
 
         self.add(layer_three)
 
+class InfoTheory(Scene):
+    def construct(self):
+        #create elements
+        LR = Square(color=GREEN, fill_opacity=0.5)
+        LR.shift(LEFT*2)
+        LR_label = Text("LR").scale(0.7)
+        LR_label.move_to(LR)
+
+        HR = Square(color=BLUE, fill_opacity=0.5)
+        HR.shift(RIGHT*2)
+        HR_label = Text("HR").scale(0.7)
+        HR_label.move_to(HR)
+
+        NN = Circle(color=GRAY, fill_opacity=0.5)
+        NN.shift(UP*2)
+        NN_label = Text("NN").scale(0.7)
+        NN_label.move_to(NN)
+
+        arrow_across = Arrow(LR.get_center(), HR.get_center(), buff=1.2, color=GRAY)
+        arrow_down = Arrow(UP, DOWN, color=GRAY)
+
+        #horizontal group for standard process
+        standard_group = VGroup(LR, LR_label, arrow_across, HR, HR_label)
+
+        #animation
+        self.play(FadeIn(LR), Write(LR_label))
+        self.play(Create(arrow_across))
+        self.play(FadeIn(HR), Write(HR_label))
+        self.play(standard_group.animate.shift(DOWN), FadeIn(NN), Write(NN_label))
+        self.play(Create(arrow_down))
+        
+
+
+
+
 

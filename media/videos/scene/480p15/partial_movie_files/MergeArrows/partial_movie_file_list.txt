@@ -1,0 +1,6 @@
+# This file is used internally by FFMPEG.
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/MergeArrows/1185818338_4236602128_223132457.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/MergeArrows/624642324_3890345977_4053558159.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/MergeArrows/624642324_3752403642_3038905987.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/MergeArrows/624642324_2058647819_226585240.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/MergeArrows/624642324_3890345977_3960035774.mp4'
