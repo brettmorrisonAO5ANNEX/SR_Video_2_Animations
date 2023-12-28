@@ -1,0 +1,5 @@
+# This file is used internally by FFMPEG.
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/FollowSquare/1185818338_2530891182_223132457.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/FollowSquare/624642324_3890345977_402878273.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/FollowSquare/624642324_2044937682_3460595726.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/FollowSquare/624642324_3890345977_1131982434.mp4'
