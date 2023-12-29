@@ -6,14 +6,6 @@ import math
 Willy_standard = ImageMobject("assets/Willy-Standard.png").scale(0.1)
 Willy_pixelated = ImageMobject("assets/Willy-Pixelated.png").scale(0.1)
 
-class PartThree(Scene):
-    def construct(self):
-        layer_one = MathTex(r"F_1(Y) = max(0, W_1*Y + B_1)", font_size=64)
-        layer_two = MathTex(r"F_2(Y) = max(0, W_2*F_1(Y) + B_2)", font_size=64)
-        layer_three = MathTex(r"F(Y) = W_3*F_2(Y) + B_3", font_size=64)
-
-        self.add(layer_three)
-
 class InfoTheory(Scene):
     def construct(self):
         #create elements
@@ -75,8 +67,8 @@ class FormalDef(Scene):
         self.play(Transform(degredation, regeneration))
 
 class QualityMetrics(Scene):
-    def construct(self):
-        #create elements
+    def construct(self):  
+        mse_hypersphere = ImageMobject("assets/MSE-Hypersphere.png").scale(1.5)
         mse = MathTex(r"MSE = \frac{1}{mn}\sum_{i=0}^{m-1}\sum_{j=0}^{n-1}[X(i,j) - Y(i,j)]^2", font_size=64)
         psnr = MathTex(r"PSNR = 10log_{10}\left(\frac{{MAX_I}^2}{MSE}\right)", font_size=64)
 
@@ -108,28 +100,6 @@ class QualityMetrics(Scene):
         mse_label = MathTex(r"MSE = ", font_size=64)
         mse_label.next_to(sum_symbol, LEFT)
 
-        #animate
-        self.play(Write(mse))
-        self.wait(2)
-
-        self.play(Transform(mse, mse_label))
-        self.play(Write(sum_symbol), Create(left_bracket), 
-                  Write(GT_label), Write(subtraction_symbol), Write(OP_label), 
-                  Create(right_bracket), Write(squared_symbol))
-        self.play(FadeIn(Loc_Willy_standard), FadeIn(Loc_Willy_pixelated))
-        self.wait(2)
-
-        self.play(FadeOut(squared_symbol), FadeOut(right_bracket), FadeOut(Willy_pixelated),
-                  FadeOut(subtraction_symbol), FadeOut(Willy_standard), FadeOut(left_bracket),
-                  FadeOut(sum_symbol), FadeOut(mse), FadeOut(GT_label), FadeOut(OP_label))
-        self.wait(2)
-
-        self.play(Create(psnr))
-        self.wait(2)
-
-
-class SSIM(Scene):
-    def construct(self):    
         GT_background = Square(color=GREEN, fill_opacity=0.5)
         GT_background.shift(RIGHT*2)
         GT_background_label = Text("GT").scale(0.6)
@@ -235,6 +205,29 @@ class SSIM(Scene):
 
         mssim = MathTex(r"MSSIM(X,Y) = \frac{1}{M}\sum_{j=1}^{M}SSIM(x_j, y_j)", font_size=64)
 
+        self.play(Write(mse))
+        self.wait(2)
+
+        self.play(Transform(mse, mse_label))
+        self.play(Write(sum_symbol), Create(left_bracket), 
+                  Write(GT_label), Write(subtraction_symbol), Write(OP_label), 
+                  Create(right_bracket), Write(squared_symbol))
+        self.play(FadeIn(Loc_Willy_standard), FadeIn(Loc_Willy_pixelated))
+        self.wait(2)
+
+        self.play(FadeOut(squared_symbol), FadeOut(right_bracket), FadeOut(Willy_pixelated),
+                  FadeOut(subtraction_symbol), FadeOut(Willy_standard), FadeOut(left_bracket),
+                  FadeOut(sum_symbol), FadeOut(mse), FadeOut(GT_label), FadeOut(OP_label))
+        self.wait(2)
+
+        self.play(Create(psnr))
+        self.wait(2)
+
+        self.play(Uncreate(psnr))
+        self.play(FadeIn(mse_hypersphere))
+        self.wait(2)
+
+        self.play(FadeOut(mse_hypersphere))
         self.play(FadeIn(GT_background), Write(GT_background_label), FadeIn(LR), Write(LR_label))
         self.wait()
         self.play(LR.animate.shift(RIGHT*1.9), LR_label.animate.shift(RIGHT*1.9),
@@ -280,18 +273,11 @@ class SSIM(Scene):
         self.play(Uncreate(ssim_cond), FadeOut(total_windows), FadeOut(WN_label), FadeOut(sigma_line), Transform(sigma, mssim))
         self.wait(2)
 
-
-class MultiColorTest(Scene):
+class PartThree(Scene):
     def construct(self):
-        tex_1 = MathTex(r"SSIM = [", font_size=36)
-        tex_2 = MathTex("l(x,y)", font_size=36, color=RED)
-        tex_3 = MathTex(r"]^{\alpha}[", font_size=36)
-        tex_4 = MathTex("c(x,y)", font_size=36, color=GREEN)
-        tex_5 = MathTex(r"]^{\beta}[", font_size=36)
-        tex_6 = MathTex("s(x,y)", font_size=36, color=BLUE)
-        tex_7 = MathTex(r"]^{\gamma}", font_size=36)
+        layer_one = MathTex(r"F_1(Y) = max(0, W_1*Y + B_1)", font_size=64)
+        layer_two = MathTex(r"F_2(Y) = max(0, W_2*F_1(Y) + B_2)", font_size=64)
+        layer_three = MathTex(r"F(Y) = W_3*F_2(Y) + B_3", font_size=64)
 
-        tex_group = VGroup(tex_1, tex_2, tex_3, tex_4, tex_5, tex_6, tex_7).arrange(RIGHT)
-
-        self.play(Write(tex_group))
+        self.add(layer_three)
         
