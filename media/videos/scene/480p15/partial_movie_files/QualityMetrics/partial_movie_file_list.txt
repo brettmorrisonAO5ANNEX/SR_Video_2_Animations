@@ -4,3 +4,8 @@ file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partia
 file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/QualityMetrics/624642324_3776217172_2452259727.mp4'
 file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/QualityMetrics/624642324_3450066025_2726584615.mp4'
 file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/QualityMetrics/624642324_2821860231_4152317426.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/QualityMetrics/624642324_1141282389_2894110661.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/QualityMetrics/624642324_178714411_1137627044.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/QualityMetrics/624642324_1141282389_3632999845.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/QualityMetrics/624642324_511382098_648508397.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/QualityMetrics/624642324_1141282389_505923466.mp4'
