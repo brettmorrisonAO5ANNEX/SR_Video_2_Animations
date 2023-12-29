@@ -129,24 +129,29 @@ class QualityMetrics(Scene):
 
 
 class SSIM(Scene):
-    def construct(self):
-        luminance = MathTex(r"Luminance = \mu_x = \frac{1}{N}\sum_{i=1}^Nx_i")
-        contrast = MathTex(r"Contrast = \sigma_x = \sqrt{\frac{1}{N-1}\sum_{i=1}^{N}(x_i - \mu_x)^2}", font_size=64)
-        sigma_xy = MathTex(r"\sigma_{xy} = \frac{1}{N-1}\sum_{i=1}^{N}(x_i - \mu_i)(y_i - \mu_y)", font_size=64)
-        
-        l_comp = MathTex(r"l(x,y) = \frac{2\mu_x\mu_y + C_1}{{\mu_x}^2 + {\mu_y}^2 + C_1}", font_size=64)
-        c_comp = MathTex(r"c(x,y) = \frac{2\sigma_x\sigma_y + C_2}{{\sigma_x}^2 + {\sigma_y}^2 + C_2}", font_size=64)
-        s_comp = MathTex(r"s(x,y) = \frac{\sigma_{xy} + C_3}{\sigma_x\sigma_y + C_3}", font_size=64)
-       
+    def construct(self):    
         ssim = MathTex(r"SSIM(x,y) = [l(x,y)]^{\alpha}[c(x,y)]^{\beta}[s(x,y)]^{\gamma}", font_size=64)
         ssim_cond = MathTex(r"where\ (\alpha, \beta, \gamma) > 0")
         ssim_group = VGroup(ssim, ssim_cond).arrange(DOWN)
        
         mssim = MathTex(r"MSSIM(X,Y) = \frac{1}{M}\sum_{j=1}^{M}SSIM(x_j, y_j)", font_size=64)
 
-        LR = Square(color=GRAY, fill_opacity=0.5)
-        LR_label = Text("Input").scale(0.6)
+        GT_background = Square(color=GREEN, fill_opacity=0.5)
+        GT_background.shift(RIGHT*2)
+        GT_background_label = Text("GT").scale(0.6)
+        GT_background_label.move_to(GT_background)
+
+        LR = Square(color=BLUE, fill_opacity=0.5)
+        LR.shift(LEFT*2)
+        LR_label = Text("HR Output").scale(0.6)
         LR_label.move_to(LR)
+
+        input_group = VGroup(GT_background, GT_background_label, LR, LR_label)
+
+        merged_image = Square(color=GRAY, fill_opacity=0.5)
+        merged_image_label=Text("image").scale(0.6)
+        merged_image_label.move_to(merged_image)
+        merged_image_group = VGroup(merged_image, merged_image_label)
 
         SHIFT_SCALAR = 0.6
 
@@ -178,56 +183,73 @@ class SSIM(Scene):
         bottom_row = VGroup(LR_window_3, LR_window_4)
         total_windows = VGroup(top_row, bottom_row)
 
-        vertical_slice = DashedLine(LR.get_edge_center(UP), LR.get_edge_center(DOWN), color=RED)
-        horizontal_slice = DashedLine(LR.get_edge_center(LEFT), LR.get_edge_center(RIGHT), color=RED)
+        vertical_slice_front = DashedLine(merged_image.get_edge_center(UP), merged_image.get_edge_center(DOWN), color=RED)
+        horizontal_slice_front = DashedLine(merged_image.get_edge_center(LEFT), merged_image.get_edge_center(RIGHT), color=RED)
 
-        #top_message = MathTex(r"\text{luminance, contrast, \& spatial components}", font_size=64)
-        #top_message.shift(UP*3.5)
-
-        bottom_message = MathTex(r"\text{for } i \in \{1, 2, \ldots, n\}, \text{ where n = number of windows}", font_size=32)
-        bottom_message.shift(DOWN*3)
+        bottom_message = MathTex(r"\text{for } i \in \{1, 2, \ldots, n\}, \text{ where n = number of windows, x = ground truth, y = HR output}", font_size=32, color=YELLOW)
+        bottom_message.shift(DOWN*3.2)
 
         WN = Square(color=GRAY, fill_opacity=0.5)
         WN.shift(LEFT*2)
-        WN_label =  MathTex(r"W_i", font_size=64)
+        WN_label =  MathTex(r"W_n^{\{x,y\}}", font_size=48)
         WN_label.move_to(WN)
-
-        mu = MathTex(r"\mu_x, \mu_y", font_size=64, color=RED)
-        mu.shift(UP)
-        mu.shift(RIGHT*2)
 
         sigma = MathTex(r"\sigma_x, \sigma_y", font_size=64, color=GREEN)
         sigma.shift(RIGHT*2)
-        sigma.next_to(mu, DOWN*2, aligned_edge=LEFT)
+
+        mu = MathTex(r"\mu_x, \mu_y", font_size=64, color=RED)
+        mu.next_to(sigma, UP*2, aligned_edge=LEFT)
 
         covariance = MathTex(r"\sigma_{xy}", font_size=64, color=BLUE)
-        covariance.shift(DOWN)
-        covariance.shift(RIGHT*2)
         covariance.next_to(sigma, DOWN*2, aligned_edge=LEFT)
 
         mu_line = DashedLine(WN.get_edge_center(RIGHT), mu.get_edge_center(LEFT))
         sigma_line = DashedLine(WN.get_edge_center(RIGHT), sigma.get_edge_center(LEFT))
         covariance_line = DashedLine(WN.get_edge_center(RIGHT), covariance.get_edge_center(LEFT))
 
+        contrast = MathTex(r"\sigma_{\{x,y\}} = \sqrt{\frac{1}{N-1}\sum_{i=1}^{N}(\{x,y\}_i - \mu_{\{x,y\}})^2}", font_size=36, color=GREEN)
+        contrast.shift(RIGHT*3.5)
 
-        self.play(FadeIn(LR), Write(LR_label))
+        luminance = MathTex(r"\mu_{\{x,y\}} = \frac{1}{N}\sum_{i=1}^N\{x,y\}_i", font_size=36, color=RED)
+        luminance.next_to(contrast, UP*3.5, aligned_edge=LEFT)
+        
+        sigma_xy = MathTex(r"\sigma_{xy} = \frac{1}{N-1}\sum_{i=1}^{N}(x_i - \mu_i)(y_i - \mu_y)", font_size=36, color=BLUE)
+        sigma_xy.next_to(contrast, DOWN*3.5, aligned_edge=LEFT)
+
+        l_comp = MathTex(r"l(x,y) = \frac{2\mu_x\mu_y + C_1}{{\mu_x}^2 + {\mu_y}^2 + C_1}", font_size=64)
+        c_comp = MathTex(r"c(x,y) = \frac{2\sigma_x\sigma_y + C_2}{{\sigma_x}^2 + {\sigma_y}^2 + C_2}", font_size=64)
+        s_comp = MathTex(r"s(x,y) = \frac{\sigma_{xy} + C_3}{\sigma_x\sigma_y + C_3}", font_size=64)
+
+        self.play(FadeIn(GT_background), Write(GT_background_label), FadeIn(LR), Write(LR_label))
+        self.wait()
+        self.play(LR.animate.shift(RIGHT*1.9), LR_label.animate.shift(RIGHT*1.9),
+                  GT_background.animate.shift(LEFT*1.9), GT_background_label.animate.shift(LEFT*1.9)) 
+        self.play(LR.animate.shift(DOWN*0.1), LR_label.animate.shift(DOWN*0.1), 
+                  GT_background.animate.shift(UP*0.1), GT_background_label.animate.shift(UP*0.1))
         self.wait(2)
 
-        self.play(Uncreate(LR_label))
-        self.play(GrowFromCenter(vertical_slice), GrowFromCenter(horizontal_slice))
-        self.play(FadeOut(LR), FadeIn(total_windows), FadeOut(vertical_slice), 
-                  FadeOut(horizontal_slice), Write(W1_label), Write(W2_label),
+        self.play(Uncreate(LR_label), Uncreate(GT_background_label))
+        self.play(Transform(input_group, merged_image_group))
+        self.play(GrowFromCenter(vertical_slice_front), GrowFromCenter(horizontal_slice_front))
+        self.play(FadeOut(input_group), FadeIn(total_windows), FadeOut(vertical_slice_front), 
+                  FadeOut(horizontal_slice_front), Write(W1_label), Write(W2_label),
                   Write(W3_label), Write(W4_label))
         self.wait(2)
 
         self.play(FadeOut(W1_label), FadeOut(W2_label),
                   FadeOut(W3_label), FadeOut(W4_label), Transform(total_windows, WN), Write(WN_label))
         self.play(Write(bottom_message))
-        #self.play(Write(top_message))
         self.play(Create(mu_line))
         self.play(Write(mu))
         self.play(Create(sigma_line))
         self.play(Write(sigma))
         self.play(Create(covariance_line))
         self.play(Write(covariance))
+        self.wait(2)
+
+        self.play(mu_line.animate.put_start_and_end_on(WN.get_edge_center(RIGHT), mu.get_edge_center(LEFT) + LEFT + UP),
+                  sigma_line.animate.put_start_and_end_on(WN.get_edge_center(RIGHT), sigma.get_edge_center(LEFT) + LEFT),
+                  covariance_line.animate.put_start_and_end_on(WN.get_edge_center(RIGHT), covariance.get_edge_center(LEFT) + LEFT + DOWN),
+                  Transform(mu, luminance), Transform(sigma, contrast), Transform(covariance, sigma_xy))
+        self.wait(2)
 
