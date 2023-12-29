@@ -130,12 +130,6 @@ class QualityMetrics(Scene):
 
 class SSIM(Scene):
     def construct(self):    
-        ssim = MathTex(r"SSIM(x,y) = [l(x,y)]^{\alpha}[c(x,y)]^{\beta}[s(x,y)]^{\gamma}", font_size=64)
-        ssim_cond = MathTex(r"where\ (\alpha, \beta, \gamma) > 0")
-        ssim_group = VGroup(ssim, ssim_cond).arrange(DOWN)
-       
-        mssim = MathTex(r"MSSIM(X,Y) = \frac{1}{M}\sum_{j=1}^{M}SSIM(x_j, y_j)", font_size=64)
-
         GT_background = Square(color=GREEN, fill_opacity=0.5)
         GT_background.shift(RIGHT*2)
         GT_background_label = Text("GT").scale(0.6)
@@ -208,7 +202,7 @@ class SSIM(Scene):
         covariance_line = DashedLine(WN.get_edge_center(RIGHT), covariance.get_edge_center(LEFT))
 
         contrast = MathTex(r"\sigma_{\{x,y\}} = \sqrt{\frac{1}{N-1}\sum_{i=1}^{N}(\{x,y\}_i - \mu_{\{x,y\}})^2}", font_size=36, color=GREEN)
-        contrast.shift(RIGHT*3.5)
+        contrast.shift(RIGHT*3.7)
 
         luminance = MathTex(r"\mu_{\{x,y\}} = \frac{1}{N}\sum_{i=1}^N\{x,y\}_i", font_size=36, color=RED)
         luminance.next_to(contrast, UP*3.5, aligned_edge=LEFT)
@@ -216,9 +210,30 @@ class SSIM(Scene):
         sigma_xy = MathTex(r"\sigma_{xy} = \frac{1}{N-1}\sum_{i=1}^{N}(x_i - \mu_i)(y_i - \mu_y)", font_size=36, color=BLUE)
         sigma_xy.next_to(contrast, DOWN*3.5, aligned_edge=LEFT)
 
-        l_comp = MathTex(r"l(x,y) = \frac{2\mu_x\mu_y + C_1}{{\mu_x}^2 + {\mu_y}^2 + C_1}", font_size=64)
-        c_comp = MathTex(r"c(x,y) = \frac{2\sigma_x\sigma_y + C_2}{{\sigma_x}^2 + {\sigma_y}^2 + C_2}", font_size=64)
-        s_comp = MathTex(r"s(x,y) = \frac{\sigma_{xy} + C_3}{\sigma_x\sigma_y + C_3}", font_size=64)
+        c_comp = MathTex(r"c(x,y) = \frac{2\sigma_x\sigma_y + C_2}{{\sigma_x}^2 + {\sigma_y}^2 + C_2}", font_size=36, color=GREEN)
+        #shift right here if necessary
+        c_comp.shift(RIGHT*2.5)
+        
+        l_comp = MathTex(r"l(x,y) = \frac{2\mu_x\mu_y + C_1}{{\mu_x}^2 + {\mu_y}^2 + C_1}", font_size=36, color=RED)
+        l_comp.next_to(c_comp, UP*4, aligned_edge=LEFT)
+        
+        s_comp = MathTex(r"s(x,y) = \frac{\sigma_{xy} + C_3}{\sigma_x\sigma_y + C_3}", font_size=36, color=BLUE)
+        s_comp.next_to(c_comp, DOWN*4, aligned_edge=LEFT)
+
+        tex_1 = MathTex(r"SSIM = [", font_size=36)
+        tex_2 = MathTex("l(x,y)", font_size=36, color=RED)
+        tex_3 = MathTex(r"]^{\alpha}[", font_size=36)
+        tex_4 = MathTex("c(x,y)", font_size=36, color=GREEN)
+        tex_5 = MathTex(r"]^{\beta}[", font_size=36)
+        tex_6 = MathTex("s(x,y)", font_size=36, color=BLUE)
+        tex_7 = MathTex(r"]^{\gamma}", font_size=36)
+        ssim = VGroup(tex_1, tex_2, tex_3, tex_4, tex_5, tex_6, tex_7).arrange(RIGHT)
+        ssim.shift(RIGHT*2.7)
+        
+        ssim_cond = MathTex(r"where\ (\alpha, \beta, \gamma) > 0", font_size=32, color=YELLOW)
+        ssim_cond.move_to(bottom_message)
+
+        mssim = MathTex(r"MSSIM(X,Y) = \frac{1}{M}\sum_{j=1}^{M}SSIM(x_j, y_j)", font_size=64)
 
         self.play(FadeIn(GT_background), Write(GT_background_label), FadeIn(LR), Write(LR_label))
         self.wait()
@@ -226,7 +241,7 @@ class SSIM(Scene):
                   GT_background.animate.shift(LEFT*1.9), GT_background_label.animate.shift(LEFT*1.9)) 
         self.play(LR.animate.shift(DOWN*0.1), LR_label.animate.shift(DOWN*0.1), 
                   GT_background.animate.shift(UP*0.1), GT_background_label.animate.shift(UP*0.1))
-        self.wait(2)
+        self.wait()
 
         self.play(Uncreate(LR_label), Uncreate(GT_background_label))
         self.play(Transform(input_group, merged_image_group))
@@ -253,3 +268,30 @@ class SSIM(Scene):
                   Transform(mu, luminance), Transform(sigma, contrast), Transform(covariance, sigma_xy))
         self.wait(2)
 
+        self.play(Transform(mu, l_comp), Transform(sigma, c_comp), Transform(covariance, s_comp))
+        self.wait(2)
+
+        self.play(total_windows.animate.shift(LEFT*1.2), sigma_line.animate.shift(LEFT*1.2), WN_label.animate.shift(LEFT*1.2), 
+                  Uncreate(mu), Transform(sigma, ssim), Uncreate(covariance), Uncreate(bottom_message),
+                  FadeOut(mu_line), FadeOut(covariance_line))
+        self.play(Write(ssim_cond))
+        self.wait(2)
+
+        self.play(Uncreate(ssim_cond), FadeOut(total_windows), FadeOut(WN_label), FadeOut(sigma_line), Transform(sigma, mssim))
+        self.wait(2)
+
+
+class MultiColorTest(Scene):
+    def construct(self):
+        tex_1 = MathTex(r"SSIM = [", font_size=36)
+        tex_2 = MathTex("l(x,y)", font_size=36, color=RED)
+        tex_3 = MathTex(r"]^{\alpha}[", font_size=36)
+        tex_4 = MathTex("c(x,y)", font_size=36, color=GREEN)
+        tex_5 = MathTex(r"]^{\beta}[", font_size=36)
+        tex_6 = MathTex("s(x,y)", font_size=36, color=BLUE)
+        tex_7 = MathTex(r"]^{\gamma}", font_size=36)
+
+        tex_group = VGroup(tex_1, tex_2, tex_3, tex_4, tex_5, tex_6, tex_7).arrange(RIGHT)
+
+        self.play(Write(tex_group))
+        
