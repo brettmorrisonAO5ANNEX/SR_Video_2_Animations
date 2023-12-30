@@ -1,0 +1,7 @@
+# This file is used internally by FFMPEG.
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/PixelatedTextExample/1185818338_1147741511_223132457.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/PixelatedTextExample/624642324_3890345977_1231897304.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/PixelatedTextExample/624642324_1896312079_335893945.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/PixelatedTextExample/624642324_3890345977_2912109317.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/PixelatedTextExample/624642324_2852671355_316245704.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/480p15/partial_movie_files/PixelatedTextExample/624642324_3890345977_2281258819.mp4'

@@ -6,6 +6,18 @@ import math
 Willy_standard = ImageMobject("assets/Willy-Standard.png").scale(0.1)
 Willy_pixelated = ImageMobject("assets/Willy-Pixelated.png").scale(0.1)
 
+class Intro(Scene):
+    def construct(self):
+        Title = Text("Image Super-Resolution Series", font_size=64)
+        SubTitle = Text("Video 2: Topic Overview", font_size=36, color=GREEN)
+        SubTitle.next_to(Title, DOWN, buff=0.1)
+
+        self.play(Write(Title))
+        self.wait()
+        self.play(Write(SubTitle))
+        self.wait()
+        self.play(FadeOut(Title), SubTitle.animate.shift(UP*0.5))
+
 class InfoTheory(Scene):
     def construct(self):
         #create elements
@@ -357,4 +369,8 @@ class PartThree(Scene):
         layer_three = MathTex(r"F(Y) = W_3*F_2(Y) + B_3", font_size=64)
 
         self.add(layer_three)
-        
+    
+
+
+
+
