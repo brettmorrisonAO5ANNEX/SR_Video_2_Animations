@@ -273,6 +273,83 @@ class QualityMetrics(Scene):
         self.play(Uncreate(ssim_cond), FadeOut(total_windows), FadeOut(WN_label), FadeOut(sigma_line), Transform(sigma, mssim))
         self.wait(2)
 
+class OverviewOne(Scene):
+    def construct(self):
+        #formal def
+        degredation = MathTex(r"I_x = D(I_y; \delta)", font_size=64)
+        degredation.shift(UP*0.5)
+
+        regeneration = MathTex(r"\hat{I_y} = F(I_x; \theta)", font_size=64)
+        regeneration.shift(DOWN*0.5)
+
+        formal_def_container = Rectangle(color=GRAY, fill_opacity=0.5)
+        formal_def_container.shift(UP*2)
+        formal_def_container_label = Text("formal definition").scale(0.6)
+        formal_def_container_label.next_to(formal_def_container, UP, buff=0.1)
+
+        #limitations by info theory (data processing inequality)
+        DPE = MathTex(r"X \rightarrow Y \rightarrow Z; {I(X;Y) \geq I(X;Z)}", font_size=64)
+
+        limitations_container = SurroundingRectangle(DPE, color=GRAY, fill_opacity=0.5)
+        limitations_container.shift(DOWN*1.5)
+        limitations_container_label = Text("limitation").scale(0.6)
+        limitations_container_label.next_to(limitations_container, UP, buff=0.1)
+
+        #quality metrics
+        metrics = MathTex(r"MSE, PSNR, MSSIM", font_size=64)
+
+        metrics_container = SurroundingRectangle(metrics, color=GRAY, fill_opacity=0.5)
+        metrics_container.shift(DOWN*2.5)
+        metrics_container_label = Text("quality metrics").scale(0.6)
+        metrics_container_label.next_to(metrics_container, UP, buff=0.1)
+
+        LR = Square(color=GRAY, fill_opacity=0.5)
+        LR.shift(LEFT*3)
+        LR_label = Text("Low Res").scale(0.6)
+        LR_label.move_to(LR)
+
+        F_mapping = Circle(color=RED, fill_opacity=0.5).scale(0.5)
+        F_mapping_label = Text("F", color=WHITE, slant=ITALIC).scale(0.6)
+
+        q_mark = MathTex(r"?", font_size=64)
+        q_mark.next_to(F_mapping, UP, buff=0.1)
+
+        HR = Square(color=BLUE, fill_opacity=0.5)
+        HR.shift(RIGHT*3)
+        HR_label = Text("High Res").scale(0.6)
+        HR_label.move_to(HR)
+
+        line_1 = DashedLine(LR.get_edge_center(RIGHT), F_mapping.get_edge_center(LEFT))
+        line_2 = DashedLine(F_mapping.get_edge_center(RIGHT), HR.get_edge_center(LEFT))
+
+        self.play(Write(degredation), Write(regeneration))
+        self.play(degredation.animate.scale(0.8), regeneration.animate.scale(0.8))
+        self.play(Write(formal_def_container_label), FadeIn(formal_def_container), degredation.animate.shift(UP*2), regeneration.animate.shift(UP*2))
+        self.wait()
+
+        self.play(Write(DPE))
+        self.play(DPE.animate.scale(0.8))
+        self.play(Write(limitations_container_label), FadeIn(limitations_container), DPE.animate.shift(DOWN*1.5))
+        self.wait()
+
+        self.play(Write(metrics))
+        self.play(metrics.animate.scale(0.8))
+        self.play(Write(metrics_container_label), FadeIn(metrics_container), metrics.animate.shift(DOWN*2.5),
+                  limitations_container.animate.shift(UP*1), limitations_container_label.animate.shift(UP*1),
+                  DPE.animate.shift(UP*1))
+        self.wait(2)
+
+        self.play(FadeOut(degredation), FadeOut(regeneration), FadeOut(formal_def_container), FadeOut(formal_def_container_label),
+                  FadeOut(DPE), FadeOut(limitations_container), FadeOut(limitations_container_label),
+                  FadeOut(metrics), FadeOut(metrics_container), FadeOut(metrics_container_label))
+        self.play(FadeIn(LR), Write(LR_label), FadeIn(F_mapping), Write(F_mapping_label), FadeIn(HR), Write(HR_label))
+        self.play(Create(line_1))
+        self.play(Create(line_2))
+        self.wait()
+        self.play(Write(q_mark))
+
+        
+
 class PartThree(Scene):
     def construct(self):
         layer_one = MathTex(r"F_1(Y) = max(0, W_1*Y + B_1)", font_size=64)
