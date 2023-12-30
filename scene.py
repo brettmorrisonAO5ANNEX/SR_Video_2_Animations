@@ -360,7 +360,132 @@ class OverviewOne(Scene):
         self.wait()
         self.play(Write(q_mark))
 
+class ConvNetOne(ThreeDScene):
+    def construct(self):
+        # Apply a 3D transformation to rotate and shift the square
+        rotation_matrix = [
+            [1/2, 0, math.sqrt(3)/2],
+            [0, 1, 0],
+            [-math.sqrt(3)/2, 0, 1/2]
+        ]
+        #shear
+        shear_matrix = [
+            [1, 0, 0],
+            [0.3, 1, 0],
+            [0, 0, 1]
+        ]
+
+        combined_matrix = np.dot(shear_matrix, rotation_matrix)
+
+        input = Square(side_length=4, color=GRAY, fill_opacity=0.5)
+        input_label = Text("Input").scale(0.6)
+        input_label.move_to(input)
+        input_group = VGroup(input, input_label)
+
+        input_R = Square(side_length=4, color=RED, fill_opacity=0.9)
+        input_R_label = Text("Input_R").scale(0.6)
+        input_R_label.move_to(input_R)
+        input_G = Square(side_length=4, color=GREEN, fill_opacity=0.75)
+        input_G_label = Text("Input_G").scale(0.6)
+        input_G_label.move_to(input_G)
+        input_B = Square(side_length=4, color=BLUE, fill_opacity=0.6)
+        input_B_label = Text("Input_B").scale(0.6)
+        input_B_label.move_to(input_B)
+        rgb_group = VGroup(input_B, input_B_label, input_G, input_G_label, input_R, input_R_label)
+        rgb_group.apply_matrix(combined_matrix)
+        rgb_group.scale(0.75)
+        rgb_group.shift(LEFT*3)  
+
+        filter_1 = Square(side_length=2, fill_opacity=0.9, color=BLUE)    
+        filter_1_proj = Square(side_length=1, fill_opacity=0, stroke_opacity=0.9, color=WHITE)
+        filter_2 = Square(side_length=2, fill_opacity=0.75, color=BLUE)
+        filter_2_proj = Square(side_length=1, fill_opacity=0, stroke_opacity=0.75, color=WHITE)
+        filter_3 = Square(side_length=2, fill_opacity=0.6, color=BLUE)
+        filter_3_proj = Square(side_length=1, fill_opacity=0, stroke_opacity=0.6, color=WHITE)
+
+        filter_group_1 = VGroup(filter_3, filter_2, filter_1)
+        filter_group_2 = VGroup(filter_3_proj, filter_2_proj, filter_1_proj)
+
+        filter_group_1.apply_matrix(combined_matrix)
+        filter_group_2.apply_matrix(combined_matrix)
+        filter_1_proj.shift(LEFT*3)
+        filter_2_proj.shift(LEFT*3)
+        filter_3_proj.shift(LEFT*3)
+        filter_2.shift(LEFT*0.2)
+        filter_2_proj.shift(LEFT*0.2)
+        filter_3.shift(LEFT*0.4)
+        filter_3_proj.shift(LEFT*0.4)
+
+        #init filter_projection @ top left of input
+        filter_group_2.next_to(rgb_group, UP + LEFT, buff=-1)
+
+        # Display the original square
+        self.play(FadeIn(input_group))
+        self.wait(1)
+        self.play(ApplyMatrix(combined_matrix, input_group))
+        self.play(input_group.animate.scale(0.75))
+        self.play(input_group.animate.shift(LEFT*3))
+        self.play(FadeOut(input_group), FadeIn(rgb_group))
+        self.play(input_B.animate.shift(LEFT*0.4), input_G.animate.shift(LEFT*0.2))
+        self.play(FadeIn(filter_group_1), FadeIn(filter_group_2))
+
+        #convolve_animation
+        self.wait(1)
+
+class ConvNet(ThreeDScene):
+    def construct(self):
+        #orientation lock
+        PHI = -75*DEGREES
+        THETA = 0*DEGREES
+        GAMMA = 90*DEGREES
+
+        input = Square(side_length=4, color=GRAY, fill_opacity=0.5)
+        input_label = Text("Input").scale(0.6)
+        input_label.move_to(input)
+        input_group = VGroup(input, input_label)
+
+        input_R = Square(side_length=4, color=RED, fill_opacity=0.9)
+        input_R_label = Text("Input_R").scale(0.6)
+        input_R_label.move_to(input_R)
+        input_G = Square(side_length=4, color=GREEN, fill_opacity=0.75)
+        input_G_label = Text("Input_G").scale(0.6)
+        input_G_label.move_to(input_G)
+        input_B = Square(side_length=4, color=BLUE, fill_opacity=0.6)
+        input_B_label = Text("Input_B").scale(0.6)
+        input_B_label.move_to(input_B)
+        rgb_group = VGroup(input_B, input_B_label, input_G, input_G_label, input_R, input_R_label)
+        rgb_group.shift(IN*4)
+
+        feature_map_R = Square(side_length=2, fill_opacity=0.9, color=BLUE)   
+        feature_map_G = Square(side_length=2, fill_opacity=0.75, color=BLUE)
+        feature_map_G.shift(IN*0.2)
+        feature_map_B = Square(side_length=2, fill_opacity=0.6, color=BLUE)
+        feature_map_B.shift(IN*0.4)
+        feature_map_group = VGroup(feature_map_B, feature_map_G, feature_map_R)
+
+        filter_R = Square(side_length=1, fill_opacity=0, stroke_opacity=0.9, color=WHITE)
+        filter_R.next_to(input_R, UP + LEFT, buff=-1)
+        filter_G = Square(side_length=1, fill_opacity=0, stroke_opacity=0.75, color=WHITE)
+        filter_G.next_to(input_G, UP + LEFT + OUT*0.2, buff=-1)
+        filter_B = Square(side_length=1, fill_opacity=0, stroke_opacity=0.6, color=WHITE)
+        filter_B.next_to(input_B, UP + LEFT + OUT*0.4, buff=-1)
+        filter_group = VGroup(filter_B, filter_G, filter_R)
+
+        self.play(FadeIn(input_group))
+        self.move_camera(phi=PHI, theta=THETA, gamma=GAMMA)
+        self.play(input_group.animate.shift(IN*4))
+        self.play(FadeOut(input_group), FadeIn(rgb_group))
+        self.play(input_B.animate.shift(IN*0.4), input_B_label.animate.shift(IN*0.4),
+                  input_G.animate.shift(IN*0.2), input_G_label.animate.shift(IN*0.2))
+        self.play(FadeIn(feature_map_group), FadeIn(filter_group))
         
+
+
+
+
+
+
+
 
 class PartThree(Scene):
     def construct(self):
@@ -370,7 +495,3 @@ class PartThree(Scene):
 
         self.add(layer_three)
     
-
-
-
-
