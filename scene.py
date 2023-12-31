@@ -548,7 +548,7 @@ class ConvNet(ThreeDScene):
         self.play(Write(complete_CNET_message))
         self.wait()
 
-class SparseCoding(ThreeDScene):
+class SparseCoding(Scene):
     def construct(self):
         willy = Willy_square.copy().scale(10)
 
@@ -610,13 +610,38 @@ class SparseCoding(ThreeDScene):
         self.play(Write(decomposition))
 
 
-class PartThree(Scene):
+class NetworkPlan(Scene):
     def construct(self):
-        layer_one = MathTex(r"F_1(Y) = max(0, W_1*Y + B_1)", font_size=64)
-        layer_two = MathTex(r"F_2(Y) = max(0, W_2*F_1(Y) + B_2)", font_size=64)
-        layer_three = MathTex(r"F(Y) = W_3*F_2(Y) + B_3", font_size=64)
+        network = ImageMobject("assets/network.png")
 
-        self.add(layer_three)
+        layer_one_label = Text(r"1. patch extraction", font_size=64)
+        layer_two_label = Text(r"2. non-linear mapping", font_size=64)
+        layer_two_label.next_to(layer_one_label, DOWN*2, aligned_edge=LEFT)
+        layer_three_label = Text(r"3. reconstruction", font_size=64)
+        layer_three_label.next_to(layer_two_label, DOWN*2, aligned_edge=LEFT)
+
+        layer_one = MathTex(r"\text{1. } F_1(Y) = max(0, W_1*Y + B_1)", font_size=64)
+        layer_two = MathTex(r"\text{2. } F_2(Y) = max(0, W_2*F_1(Y) + B_2)", font_size=64)
+        layer_two.next_to(layer_one, DOWN*2, aligned_edge=LEFT)
+        layer_three = MathTex(r"\text{3. } F(Y) = W_3*F_2(Y) + B_3", font_size=64)
+        layer_three.next_to(layer_two, DOWN*2, aligned_edge=LEFT)
+
+        self.play(FadeIn(network))
+        self.wait()
+        self.play(network.animate.scale(0.75))
+        self.play(network.animate.shift(UP*2))
+        self.play(Write(layer_one_label))
+        self.wait()
+        self.play(Write(layer_two_label))
+        self.wait()
+        self.play(Write(layer_three_label))
+        self.wait()
+        self.play(Transform(layer_one_label, layer_one))
+        self.wait()
+        self.play(Transform(layer_two_label, layer_two))
+        self.wait()
+        self.play(Transform(layer_three_label, layer_three))
+        self.wait()
 
 
     
