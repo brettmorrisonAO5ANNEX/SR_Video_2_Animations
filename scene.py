@@ -5,6 +5,7 @@ import math
 #global elemnts
 Willy_standard = ImageMobject("assets/Willy-Standard.png").scale(0.1)
 Willy_pixelated = ImageMobject("assets/Willy-Pixelated.png").scale(0.1)
+Willy_square = ImageMobject("assets/Willy-Square.png").scale(0.1)
 
 class Intro(Scene):
     def construct(self):
@@ -514,7 +515,7 @@ class ConvNet(ThreeDScene):
         array_4 = array_1.copy()
         array_4.next_to(array_3, UP, buff=0)
         array_5 = array_1.copy()
-        array_5.next_to(array_center, DOWN, buff=0.5)
+        array_5.next_to(array_center, DOWN, buff=0.4)
         array_6 = array_1.copy()
         array_6.next_to(array_5, DOWN, buff=0)
         array_7 = array_1.copy()
@@ -547,7 +548,68 @@ class ConvNet(ThreeDScene):
         self.play(Write(complete_CNET_message))
         self.wait()
 
+class SparseCoding(ThreeDScene):
+    def construct(self):
+        willy = Willy_square.copy().scale(10)
+
+        component_side_length = willy.width / 4
+
+        component_1 = Square(side_length=component_side_length, fill_opacity=0.75, color=BLUE)
+        component_1_label = MathTex(r"\varphi_{1}", font_size=32)
+        component_1_label.move_to(component_1)
+        comp_1 = VGroup(component_1, component_1_label)
+
+        component_2 = component_1.copy()
+        component_2_label = MathTex(r"\varphi_{2}", font_size=32)
+        component_2_label.move_to(component_2)
+        comp_2 = VGroup(component_2, component_2_label)
+
+        comp_skip = MathTex(r"\vdots", font_size=96)
+
+        component_3 = component_1.copy()
+        component_3_label = MathTex(r"\varphi_{n-1}", font_size=32)
+        component_3_label.move_to(component_3)
+        comp_3 = VGroup(component_3, component_3_label)
+
+        component_n = component_1.copy()
+        component_n_label = MathTex(r"\varphi_{n}", font_size=32)
+        component_n_label.move_to(component_n)
+        comp_4 = VGroup(component_n, component_n_label)
+
+        comp_2.next_to(comp_skip, UP, buff=0.4)
+        comp_3.next_to(comp_skip, DOWN, buff=0.4)
+        comp_1.next_to(comp_2, UP, buff=0)
+        comp_4.next_to(comp_3, DOWN, buff=0)
         
+        dictionary = VGroup(comp_1, comp_2, comp_skip, comp_3, comp_4)
+        dictionary.shift(RIGHT*2)
+        
+        self.play(FadeIn(willy))
+        self.wait()
+        self.play(willy.animate.shift(LEFT*2))
+
+        left_brace = Brace(willy, LEFT)
+        left_brace.next_to(willy, LEFT)
+        right_brace = Brace(willy, RIGHT)
+        right_brace.next_to(willy, RIGHT)
+        brace_group = VGroup(left_brace, right_brace)
+
+        extraction_arrow = MathTex(r"\rightarrow", font_size=64)
+        extraction_arrow.shift(RIGHT)
+
+        self.play(FadeIn(brace_group))
+        self.play(FadeIn(extraction_arrow))
+        for comp in dictionary:
+            self.play(FadeIn(comp), run_time=0.5)
+        self.wait()
+        self.play(FadeOut(brace_group), FadeOut(extraction_arrow), FadeOut(dictionary), willy.animate.scale(0.8))
+
+        decomposition = MathTex(r"= \sum_{i=1}^{n}{a_i\varphi_i}", font_size=64)
+        decomposition.shift(RIGHT*1.5)
+
+        self.play(Write(decomposition))
+
+
 class PartThree(Scene):
     def construct(self):
         layer_one = MathTex(r"F_1(Y) = max(0, W_1*Y + B_1)", font_size=64)
