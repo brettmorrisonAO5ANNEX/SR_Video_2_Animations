@@ -388,12 +388,12 @@ class ConvNet(ThreeDScene):
         rgb_group = VGroup(input_B, input_B_label, input_G, input_G_label, input_R, input_R_label)
         rgb_group.shift(IN*4)
 
-        feature_map_R = Square(side_length=3.5, fill_opacity=0.5, color=RED)   
+        feature_map_R = Square(side_length=2.5, fill_opacity=0.9, color=RED)   
         feature_map_R_label = Text("feature map R").scale(0.6)
-        feature_map_G = Square(side_length=3.5, fill_opacity=0.5, color=GREEN)
+        feature_map_G = Square(side_length=2.5, fill_opacity=0.75, color=GREEN)
         feature_map_G.shift(IN*0.2)
         feature_map_G_label = Text("feature map G").scale(0.6)
-        feature_map_B = Square(side_length=3.5, fill_opacity=0.5, color=BLUE)
+        feature_map_B = Square(side_length=2.5, fill_opacity=0.6, color=BLUE)
         feature_map_B.shift(IN*0.4)
         feature_map_B_label = Text("feature map B").scale(0.6)
 
@@ -416,12 +416,14 @@ class ConvNet(ThreeDScene):
 
         output_group = VGroup(output_B, output_G, output_R, output_line_1, output_line_2, output_line_3, output_line_4)
 
-        filter_R = Square(side_length=1, fill_opacity=0, stroke_opacity=0.9, color=WHITE)
-        filter_R.next_to(input_R, UP + LEFT, buff=-1)
-        filter_G = Square(side_length=1, fill_opacity=0, stroke_opacity=0.75, color=WHITE)
-        filter_G.next_to(input_G, UP + LEFT + OUT*0.2, buff=-1)
-        filter_B = Square(side_length=1, fill_opacity=0, stroke_opacity=0.6, color=WHITE)
-        filter_B.next_to(input_B, UP + LEFT + OUT*0.4, buff=-1)
+        filter_R = Square(side_length=1.5, fill_opacity=0, stroke_opacity=0.9, color=WHITE)
+        filter_R.next_to(input_R, UP + LEFT, buff=-1.5)
+        filter_G = Square(side_length=1.5, fill_opacity=0, stroke_opacity=0.75, color=WHITE)
+        filter_G.next_to(input_G, UP + LEFT, buff=-1.5)
+        filter_G.shift(IN*0.2)
+        filter_B = Square(side_length=1.5, fill_opacity=0, stroke_opacity=0.6, color=WHITE)
+        filter_B.next_to(input_B, UP + LEFT, buff=-1.5)
+        filter_B.shift(IN*0.4)
     
         filter_R_vertices = filter_R.get_vertices()
         filter_B_vertices = filter_B.get_vertices()
@@ -453,28 +455,23 @@ class ConvNet(ThreeDScene):
 
         #define feature_map_ind_group
         feature_map_ind_group = VGroup()
-        """
+
         #first conv layer
-        for y in range(13):
-            for x in range(12):
+        for y in range(11):
+            for x in range(10):
                 #leave behind a value
-                result_R = output_R.copy().set_color(RED)
-                result_G = output_G.copy().set_color(GREEN)
-                result_B = output_B.copy().set_color(BLUE)
+                result_R = output_R.copy()
+                result_G = output_G.copy()
+                result_B = output_B.copy()
                 feature_map_ind_group.add(result_B, result_G, result_R)
 
-                self.add(result_R, result_G, result_B)
+                self.add(result_B, result_G, result_R)
                 #shift
                 self.play(conv_group.animate.shift(RIGHT*CONV_SHIFT_H), run_time=0.01)
 
-            self.play(conv_group.animate.shift(LEFT*12*CONV_SHIFT_H), run_time=0.01)
+            self.play(conv_group.animate.shift(LEFT*10*CONV_SHIFT_H), run_time=0.01)
             self.play(conv_group.animate.shift(DOWN*CONV_SHIFT_V), run_time=0.01)
-
-            """
-        
         self.play(Uncreate(conv_group))
-
-        #display the three feature maps
         self.play(FadeOut(rgb_group))
         self.play(FadeOut(feature_map_ind_group), FadeIn(feature_map_group))
         self.move_camera(phi=PHI_OG, theta=THETA_OG, gamma=GAMMA_OG)
@@ -487,16 +484,68 @@ class ConvNet(ThreeDScene):
 
         self.play(Write(feature_map_R_label), Write(feature_map_G_label), Write(feature_map_B_label))
         self.wait()
-
-        #re-orient to conv view for flattening into rest of network
-        self.play(Uncreate(feature_map_R_label), Uncreate(feature_map_G_label), Uncreate(feature_map_B_label),
-                  feature_map_B.animate.move_to(feature_map_G),
+        self.play(Uncreate(feature_map_R_label), Uncreate(feature_map_G_label), Uncreate(feature_map_B_label))
+        self.play(feature_map_B.animate.move_to(feature_map_G),
                   feature_map_R.animate.move_to(feature_map_G))
         
         feature_map_B.shift(IN*0.2)
         feature_map_R.shift(OUT*0.2)
 
         self.move_camera(phi=PHI_CONV, theta=THETA_CONV, gamma=GAMMA_CONV)
+
+        dot_1 = Sphere(radius=0.1)
+        dot_2 = dot_1.copy()
+        dot_2.shift(OUT*0.4)
+        dot_3 = dot_2.copy()
+        dot_3.shift(OUT*0.4)
+
+        conv_black_box_R = VGroup(dot_1, dot_2, dot_3)
+        conv_black_box_R.shift(OUT)
+        conv_black_box_L = conv_black_box_R.copy()
+        conv_black_box_L.shift(IN*3.5)
+
+        array_center = MathTex(r"\vdots", font_size=96)
+        array_1 = Square(side_length=0.4, fill_opacity=0)
+        array_1.next_to(array_center, UP, buff=0.4)
+        array_2 = array_1.copy()
+        array_2.next_to(array_1, UP, buff=0)
+        array_3 = array_1.copy()
+        array_3.next_to(array_2, UP, buff=0)
+        array_4 = array_1.copy()
+        array_4.next_to(array_3, UP, buff=0)
+        array_5 = array_1.copy()
+        array_5.next_to(array_center, DOWN, buff=0.5)
+        array_6 = array_1.copy()
+        array_6.next_to(array_5, DOWN, buff=0)
+        array_7 = array_1.copy()
+        array_7.next_to(array_6, DOWN, buff=0)
+        array_8 = array_1.copy()
+        array_8.next_to(array_7, DOWN, buff=0)
+
+        array_group = VGroup(array_center, array_1, array_2, array_3, array_4, array_5, array_6, array_6, array_7, array_8)
+        array_group.shift(OUT*3)
+
+        self.play(FadeIn(rgb_group), FadeIn(conv_black_box_L), FadeIn(conv_black_box_R), FadeIn(array_group))
+        self.play(input_G.animate.shift(OUT*0.2), input_G_label.animate.shift(OUT*0.2),
+                  input_B.animate.shift(OUT*0.4), input_B_label.animate.shift(OUT*0.4))
+        self.play(FadeOut(rgb_group), FadeIn(input_group))
+        self.wait()
+        self.play(FadeOut(input_group), FadeOut(conv_black_box_L), FadeOut(feature_map_group), FadeOut(conv_black_box_R), 
+                  array_group.animate.shift(IN*3))
+        self.move_camera(phi=PHI_OG, theta=THETA_OG, gamma=GAMMA_OG)
+
+        array_label = Text("flattened array of feature maps", color=YELLOW).scale(0.6)
+        array_label.next_to(array_group, DOWN, buff=0.5)
+
+        self.play(Write(array_label))
+        self.wait()
+        self.play(Uncreate(array_label), array_group.animate.shift(LEFT*3))
+
+        complete_CNET_message = MathTex(r"\rightarrow NN \rightarrow output", font_size=64)
+        complete_CNET_message.next_to(array_group, RIGHT, buff=0.5)
+
+        self.play(Write(complete_CNET_message))
+        self.wait()
 
         
 class PartThree(Scene):
