@@ -363,9 +363,12 @@ class OverviewOne(Scene):
 class ConvNet(ThreeDScene):
     def construct(self):
         #orientation lock
-        PHI = -75*DEGREES
-        THETA = 0*DEGREES
-        GAMMA = 90*DEGREES
+        PHI_OG = 0*DEGREES
+        THETA_OG = -90*DEGREES
+        GAMMA_OG = 0*DEGREES
+        PHI_CONV = -75*DEGREES
+        THETA_CONV = 0*DEGREES
+        GAMMA_CONV = 90*DEGREES
 
         input = Square(side_length=4, color=GRAY, fill_opacity=0.5)
         input_label = Text("Input").scale(0.6)
@@ -381,15 +384,37 @@ class ConvNet(ThreeDScene):
         input_B = Square(side_length=4, color=BLUE, fill_opacity=0.6)
         input_B_label = Text("Input_B").scale(0.6)
         input_B_label.move_to(input_B)
+
         rgb_group = VGroup(input_B, input_B_label, input_G, input_G_label, input_R, input_R_label)
         rgb_group.shift(IN*4)
 
-        feature_map_R = Square(side_length=2, fill_opacity=0.9, color=BLUE)   
-        feature_map_G = Square(side_length=2, fill_opacity=0.75, color=BLUE)
+        feature_map_R = Square(side_length=3.5, fill_opacity=0.5, color=RED)   
+        feature_map_R_label = Text("feature map R").scale(0.6)
+        feature_map_G = Square(side_length=3.5, fill_opacity=0.5, color=GREEN)
         feature_map_G.shift(IN*0.2)
-        feature_map_B = Square(side_length=2, fill_opacity=0.6, color=BLUE)
+        feature_map_G_label = Text("feature map G").scale(0.6)
+        feature_map_B = Square(side_length=3.5, fill_opacity=0.5, color=BLUE)
         feature_map_B.shift(IN*0.4)
+        feature_map_B_label = Text("feature map B").scale(0.6)
+
         feature_map_group = VGroup(feature_map_B, feature_map_G, feature_map_R)
+
+        output_R = Square(side_length=1/5, fill_opacity=0, stroke_opacity=0.9, color=WHITE) 
+        output_R.next_to(feature_map_R, UP + LEFT, buff=-1/5)  
+        output_G = Square(side_length=1/5, fill_opacity=0, stroke_opacity=0.75, color=WHITE)   
+        output_G.next_to(feature_map_G, UP + LEFT, buff=-1/5)
+        output_B = Square(side_length=1/5, fill_opacity=0, stroke_opacity=0.6, color=WHITE)   
+        output_B.next_to(feature_map_B, UP + LEFT, buff=-1/5)
+
+        output_R_vertices = output_R.get_vertices()
+        output_B_vertices = output_B.get_vertices()
+
+        output_line_1 = DashedLine(output_R_vertices[0], output_B_vertices[0])
+        output_line_2 = DashedLine(output_R_vertices[1], output_B_vertices[1])
+        output_line_3 = DashedLine(output_R_vertices[2], output_B_vertices[2])
+        output_line_4 = DashedLine(output_R_vertices[3], output_B_vertices[3])
+
+        output_group = VGroup(output_B, output_G, output_R, output_line_1, output_line_2, output_line_3, output_line_4)
 
         filter_R = Square(side_length=1, fill_opacity=0, stroke_opacity=0.9, color=WHITE)
         filter_R.next_to(input_R, UP + LEFT, buff=-1)
@@ -397,15 +422,82 @@ class ConvNet(ThreeDScene):
         filter_G.next_to(input_G, UP + LEFT + OUT*0.2, buff=-1)
         filter_B = Square(side_length=1, fill_opacity=0, stroke_opacity=0.6, color=WHITE)
         filter_B.next_to(input_B, UP + LEFT + OUT*0.4, buff=-1)
-        filter_group = VGroup(filter_B, filter_G, filter_R)
+    
+        filter_R_vertices = filter_R.get_vertices()
+        filter_B_vertices = filter_B.get_vertices()
 
+        filter_line_1 = DashedLine(filter_R_vertices[0], filter_B_vertices[0])
+        filter_line_2 = DashedLine(filter_R_vertices[1], filter_B_vertices[1])
+        filter_line_3 = DashedLine(filter_R_vertices[2], filter_B_vertices[2])
+        filter_line_4 = DashedLine(filter_R_vertices[3], filter_B_vertices[3])
+
+        filter_group = VGroup(filter_B, filter_G, filter_R, filter_line_1, filter_line_2, filter_line_3, filter_line_4)
+
+        conv_line_1 = DashedLine(filter_R_vertices[0], output_B_vertices[0])
+        conv_line_2 = DashedLine(filter_R_vertices[1], output_B_vertices[1])
+        conv_line_3 = DashedLine(filter_R_vertices[2], output_B_vertices[2])
+        conv_line_4 = DashedLine(filter_R_vertices[3], output_B_vertices[3])
+
+        conv_group = VGroup(filter_group, output_group, conv_line_1, conv_line_2, conv_line_3, conv_line_4)
+
+        CONV_SHIFT_H = 1/4
+        CONV_SHIFT_V = 1/4
+        
         self.play(FadeIn(input_group))
-        self.move_camera(phi=PHI, theta=THETA, gamma=GAMMA)
+        self.move_camera(phi=PHI_CONV, theta=THETA_CONV, gamma=GAMMA_CONV)
         self.play(input_group.animate.shift(IN*4))
         self.play(FadeOut(input_group), FadeIn(rgb_group))
         self.play(input_B.animate.shift(IN*0.4), input_B_label.animate.shift(IN*0.4),
                   input_G.animate.shift(IN*0.2), input_G_label.animate.shift(IN*0.2))
-        self.play(FadeIn(feature_map_group), FadeIn(filter_group))
+        self.play(FadeIn(conv_group))
+
+        #define feature_map_ind_group
+        feature_map_ind_group = VGroup()
+        """
+        #first conv layer
+        for y in range(13):
+            for x in range(12):
+                #leave behind a value
+                result_R = output_R.copy().set_color(RED)
+                result_G = output_G.copy().set_color(GREEN)
+                result_B = output_B.copy().set_color(BLUE)
+                feature_map_ind_group.add(result_B, result_G, result_R)
+
+                self.add(result_R, result_G, result_B)
+                #shift
+                self.play(conv_group.animate.shift(RIGHT*CONV_SHIFT_H), run_time=0.01)
+
+            self.play(conv_group.animate.shift(LEFT*12*CONV_SHIFT_H), run_time=0.01)
+            self.play(conv_group.animate.shift(DOWN*CONV_SHIFT_V), run_time=0.01)
+
+            """
+        
+        self.play(Uncreate(conv_group))
+
+        #display the three feature maps
+        self.play(FadeOut(rgb_group))
+        self.play(FadeOut(feature_map_ind_group), FadeIn(feature_map_group))
+        self.move_camera(phi=PHI_OG, theta=THETA_OG, gamma=GAMMA_OG)
+        self.play(feature_map_B.animate.next_to(feature_map_G, LEFT, buff=0.1), 
+                  feature_map_R.animate.next_to(feature_map_G, RIGHT, buff=0.1))
+
+        feature_map_R_label.move_to(feature_map_R)
+        feature_map_G_label.move_to(feature_map_G)
+        feature_map_B_label.move_to(feature_map_B)
+
+        self.play(Write(feature_map_R_label), Write(feature_map_G_label), Write(feature_map_B_label))
+        self.wait()
+
+        #re-orient to conv view for flattening into rest of network
+        self.play(Uncreate(feature_map_R_label), Uncreate(feature_map_G_label), Uncreate(feature_map_B_label),
+                  feature_map_B.animate.move_to(feature_map_G),
+                  feature_map_R.animate.move_to(feature_map_G))
+        
+        feature_map_B.shift(IN*0.2)
+        feature_map_R.shift(OUT*0.2)
+
+        self.move_camera(phi=PHI_CONV, theta=THETA_CONV, gamma=GAMMA_CONV)
+
         
 class PartThree(Scene):
     def construct(self):
@@ -414,4 +506,6 @@ class PartThree(Scene):
         layer_three = MathTex(r"F(Y) = W_3*F_2(Y) + B_3", font_size=64)
 
         self.add(layer_three)
+
+
     
