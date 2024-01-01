@@ -393,32 +393,47 @@ class QualityMetrics(Scene):
 class OverviewOne(Scene):
     def construct(self):
         #formal def
-        degredation = MathTex(r"I_x = D(I_y; \delta)", font_size=64)
-        degredation.shift(UP*0.5)
+        degredation = MathTex(r"I_x = D(I_y; \delta)", font_size=64).scale(0.8)
+        degredation.shift(UP*2.5)
 
-        regeneration = MathTex(r"\hat{I_y} = F(I_x; \theta)", font_size=64)
-        regeneration.shift(DOWN*0.5)
+        regeneration = MathTex(r"\hat{I_y} = F(I_x; \theta)", font_size=64).scale(0.8)
+        regeneration.shift(UP*1.5)
 
-        formal_def_container = Rectangle(color=GRAY, fill_opacity=0.5)
+        formal_def_container = Rectangle(color=WHITE, fill_opacity=0)
         formal_def_container.shift(UP*2)
         formal_def_container_label = Text("formal definition").scale(0.6)
         formal_def_container_label.next_to(formal_def_container, UP, buff=0.1)
 
-        #limitations by info theory (data processing inequality)
-        DPE = MathTex(r"X \rightarrow Y \rightarrow Z; {I(X;Y) \geq I(X;Z)}", font_size=64)
+        formal_def_group = VGroup(formal_def_container, formal_def_container_label, degredation, regeneration)
 
-        limitations_container = SurroundingRectangle(DPE, color=GRAY, fill_opacity=0.5)
-        limitations_container.shift(DOWN*1.5)
+        self.play(FadeIn(formal_def_group))
+        self.wait()
+
+        #limitations by info theory (data processing inequality)
+        DPE = MathTex(r"X \rightarrow Y \rightarrow Z; {I(X;Y) \geq I(X;Z)}", font_size=64).scale(0.8)
+        DPE.shift(DOWN*0.5)
+
+        limitations_container = SurroundingRectangle(DPE, color=WHITE, fill_opacity=0)
         limitations_container_label = Text("limitation").scale(0.6)
         limitations_container_label.next_to(limitations_container, UP, buff=0.1)
 
-        #quality metrics
-        metrics = MathTex(r"MSE, PSNR, MSSIM", font_size=64)
+        limitations_group = VGroup(limitations_container, limitations_container_label, DPE)
 
-        metrics_container = SurroundingRectangle(metrics, color=GRAY, fill_opacity=0.5)
-        metrics_container.shift(DOWN*2.5)
+        self.play(FadeIn(limitations_group))
+        self.wait()
+
+        #quality metrics
+        metrics = MathTex(r"MSE, PSNR, MSSIM", font_size=64).scale(0.8)
+        metrics.shift(DOWN*2.5)
+
+        metrics_container = SurroundingRectangle(metrics, color=WHITE, fill_opacity=0)
         metrics_container_label = Text("quality metrics").scale(0.6)
         metrics_container_label.next_to(metrics_container, UP, buff=0.1)
+
+        metrics_group = VGroup(metrics_container, metrics_container_label, metrics)
+
+        self.play(FadeIn(metrics_group))
+        self.wait(2)
 
         LR = Square(color=GRAY, fill_opacity=0.5)
         LR.shift(LEFT*3)
@@ -438,23 +453,6 @@ class OverviewOne(Scene):
 
         line_1 = Line(LR.get_edge_center(RIGHT), F_mapping.get_edge_center(LEFT))
         line_2 = Line(F_mapping.get_edge_center(RIGHT), HR.get_edge_center(LEFT))
-
-        self.play(Write(degredation), Write(regeneration))
-        self.play(degredation.animate.scale(0.8), regeneration.animate.scale(0.8))
-        self.play(Write(formal_def_container_label), FadeIn(formal_def_container), degredation.animate.shift(UP*2), regeneration.animate.shift(UP*2))
-        self.wait()
-
-        self.play(Write(DPE))
-        self.play(DPE.animate.scale(0.8))
-        self.play(Write(limitations_container_label), FadeIn(limitations_container), DPE.animate.shift(DOWN*1.5))
-        self.wait()
-
-        self.play(Write(metrics))
-        self.play(metrics.animate.scale(0.8))
-        self.play(Write(metrics_container_label), FadeIn(metrics_container), metrics.animate.shift(DOWN*2.5),
-                  limitations_container.animate.shift(UP*1), limitations_container_label.animate.shift(UP*1),
-                  DPE.animate.shift(UP*1))
-        self.wait(2)
 
         self.play(FadeOut(degredation), FadeOut(regeneration), FadeOut(formal_def_container), FadeOut(formal_def_container_label),
                   FadeOut(DPE), FadeOut(limitations_container), FadeOut(limitations_container_label),
