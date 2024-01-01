@@ -572,8 +572,9 @@ class ConvNet(ThreeDScene):
                 #shift
                 self.play(conv_group.animate.shift(RIGHT*CONV_SHIFT_H), run_time=0.01)
 
-            self.play(conv_group.animate.shift(LEFT*10*CONV_SHIFT_H), run_time=0.01)
-            self.play(conv_group.animate.shift(DOWN*CONV_SHIFT_V), run_time=0.01)
+            if y < 10:
+                self.play(conv_group.animate.shift(LEFT*10*CONV_SHIFT_H), run_time=0.01)
+                self.play(conv_group.animate.shift(DOWN*CONV_SHIFT_V), run_time=0.01)
         
         self.play(Uncreate(conv_group))
         self.play(FadeOut(rgb_group))
