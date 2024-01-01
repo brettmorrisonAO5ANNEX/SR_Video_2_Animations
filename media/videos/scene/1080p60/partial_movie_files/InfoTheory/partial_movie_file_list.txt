@@ -1,0 +1,11 @@
+# This file is used internally by FFMPEG.
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/1080p60/partial_movie_files/InfoTheory/3529212410_2369577179_223132457.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/1080p60/partial_movie_files/InfoTheory/3040924799_2284642314_4151622496.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/1080p60/partial_movie_files/InfoTheory/3040924799_3353985818_473856010.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/1080p60/partial_movie_files/InfoTheory/3040924799_1704852926_2686646305.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/1080p60/partial_movie_files/InfoTheory/3040924799_2272652046_987321808.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/1080p60/partial_movie_files/InfoTheory/3040924799_2015894618_4101875661.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/1080p60/partial_movie_files/InfoTheory/3040924799_1488364005_1673441836.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/1080p60/partial_movie_files/InfoTheory/3040924799_1298785746_444227949.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/1080p60/partial_movie_files/InfoTheory/3040924799_3868689399_780069735.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/scene/1080p60/partial_movie_files/InfoTheory/3040924799_2316670760_813975040.mp4'

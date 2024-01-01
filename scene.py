@@ -26,7 +26,7 @@ class InfoTheory(Scene):
         LR_label = Text("Low Res").scale(0.6)
         LR_label.move_to(LR)
 
-        F_mapping = Circle(color=RED, fill_opacity=0.5).scale(0.5)
+        F_mapping = Circle(color=ORANGE, fill_opacity=0.5).scale(0.5)
         F_mapping_label = Text("F", color=WHITE, slant=ITALIC).scale(0.6)
 
         HR = Square(color=GREEN, fill_opacity=0.5)
@@ -40,7 +40,7 @@ class InfoTheory(Scene):
         HR_upper_label = Text("High Res 2").scale(0.6)
         HR_upper_label.move_to(HR_upper)
 
-        NN = Circle(color=RED, fill_opacity=0.5).scale(0.5)
+        NN = Circle(color=ORANGE, fill_opacity=0.5).scale(0.5)
         NN.shift(UP*2)
         NN_label = Text("NN").scale(0.8)
         NN_label.move_to(NN)
@@ -149,7 +149,7 @@ class FormalDef(Scene):
         self.play(Write(regeneration))
         self.wait()
 
-
+#put updated quality metrics here
 class QualityMetrics(Scene):
     def construct(self):  
         mse_hypersphere = ImageMobject("assets/MSE-Hypersphere.png").scale(1.5)
@@ -189,7 +189,7 @@ class QualityMetrics(Scene):
         GT_background_label = Text("GT").scale(0.6)
         GT_background_label.move_to(GT_background)
 
-        LR = Square(color=GRAY, fill_opacity=0.5)
+        LR = Square(color=BLUE, fill_opacity=0.5)
         LR.shift(LEFT*2)
         LR_label = Text("HR Output").scale(0.6)
         LR_label.move_to(LR)
@@ -255,24 +255,24 @@ class QualityMetrics(Scene):
         sigma_line = DashedLine(WN.get_edge_center(RIGHT), sigma.get_edge_center(LEFT))
         covariance_line = DashedLine(WN.get_edge_center(RIGHT), covariance.get_edge_center(LEFT))
 
+        c_comp = MathTex(r"c(x,y) = \frac{2\sigma_x\sigma_y + C_2}{{\sigma_x}^2 + {\sigma_y}^2 + C_2}", font_size=36, color=GREEN)
+        #shift right here if necessary
+        c_comp.shift(RIGHT*1.5)
+        
+        l_comp = MathTex(r"l(x,y) = \frac{2\mu_x\mu_y + C_1}{{\mu_x}^2 + {\mu_y}^2 + C_1}", font_size=36, color=RED)
+        l_comp.next_to(c_comp, UP*4.2, aligned_edge=LEFT)
+        
+        s_comp = MathTex(r"s(x,y) = \frac{\sigma_{xy} + C_3}{\sigma_x\sigma_y + C_3}", font_size=36, color=BLUE)
+        s_comp.next_to(c_comp, DOWN*4.2, aligned_edge=LEFT)
+
         contrast = MathTex(r"\sigma_{\{x,y\}} = \sqrt{\frac{1}{N-1}\sum_{i=1}^{N}(\{x,y\}_i - \mu_{\{x,y\}})^2}", font_size=36, color=GREEN)
-        contrast.shift(RIGHT*3.7)
+        contrast.move_to(c_comp, aligned_edge=LEFT)
 
         luminance = MathTex(r"\mu_{\{x,y\}} = \frac{1}{N}\sum_{i=1}^N\{x,y\}_i", font_size=36, color=RED)
         luminance.next_to(contrast, UP*3.5, aligned_edge=LEFT)
         
         sigma_xy = MathTex(r"\sigma_{xy} = \frac{1}{N-1}\sum_{i=1}^{N}(x_i - \mu_i)(y_i - \mu_y)", font_size=36, color=BLUE)
         sigma_xy.next_to(contrast, DOWN*3.5, aligned_edge=LEFT)
-
-        c_comp = MathTex(r"c(x,y) = \frac{2\sigma_x\sigma_y + C_2}{{\sigma_x}^2 + {\sigma_y}^2 + C_2}", font_size=36, color=GREEN)
-        #shift right here if necessary
-        c_comp.shift(RIGHT*2.5)
-        
-        l_comp = MathTex(r"l(x,y) = \frac{2\mu_x\mu_y + C_1}{{\mu_x}^2 + {\mu_y}^2 + C_1}", font_size=36, color=RED)
-        l_comp.next_to(c_comp, UP*4, aligned_edge=LEFT)
-        
-        s_comp = MathTex(r"s(x,y) = \frac{\sigma_{xy} + C_3}{\sigma_x\sigma_y + C_3}", font_size=36, color=BLUE)
-        s_comp.next_to(c_comp, DOWN*4, aligned_edge=LEFT)
 
         tex_1 = MathTex(r"SSIM = [", font_size=36)
         tex_2 = MathTex("l(x,y)", font_size=36, color=RED)
@@ -291,26 +291,21 @@ class QualityMetrics(Scene):
 
         self.play(Write(mse))
         self.wait(2)
-
         self.play(Transform(mse, mse_label))
         self.play(Write(sum_symbol), Create(left_bracket), 
                   Write(GT_label), Write(subtraction_symbol), Write(OP_label), 
                   Create(right_bracket), Write(squared_symbol))
         self.play(FadeIn(Loc_Willy_standard), FadeIn(Loc_Willy_pixelated))
         self.wait(2)
-
         self.play(FadeOut(squared_symbol), FadeOut(right_bracket), FadeOut(Willy_pixelated),
                   FadeOut(subtraction_symbol), FadeOut(Willy_standard), FadeOut(left_bracket),
                   FadeOut(sum_symbol), FadeOut(mse), FadeOut(GT_label), FadeOut(OP_label))
         self.wait(2)
-
         self.play(Create(psnr))
         self.wait(2)
-
         self.play(Uncreate(psnr))
         self.play(FadeIn(mse_hypersphere))
         self.wait(2)
-
         self.play(FadeOut(mse_hypersphere))
         self.play(FadeIn(GT_background), Write(GT_background_label), FadeIn(LR), Write(LR_label))
         self.wait()
@@ -319,7 +314,6 @@ class QualityMetrics(Scene):
         self.play(LR.animate.shift(DOWN*0.1), LR_label.animate.shift(DOWN*0.1), 
                   GT_background.animate.shift(UP*0.1), GT_background_label.animate.shift(UP*0.1))
         self.wait()
-
         self.play(Uncreate(LR_label), Uncreate(GT_background_label))
         self.play(Transform(input_group, merged_image_group))
         self.play(GrowFromCenter(vertical_slice_front), GrowFromCenter(horizontal_slice_front))
@@ -327,7 +321,6 @@ class QualityMetrics(Scene):
                   FadeOut(horizontal_slice_front), Write(W1_label), Write(W2_label),
                   Write(W3_label), Write(W4_label))
         self.wait(2)
-
         self.play(FadeOut(W1_label), FadeOut(W2_label),
                   FadeOut(W3_label), FadeOut(W4_label), Transform(total_windows, WN), Write(WN_label))
         self.play(Write(bottom_message))
@@ -338,22 +331,19 @@ class QualityMetrics(Scene):
         self.play(Create(covariance_line))
         self.play(Write(covariance))
         self.wait(2)
-
-        self.play(mu_line.animate.put_start_and_end_on(WN.get_edge_center(RIGHT), mu.get_edge_center(LEFT) + LEFT + UP),
-                  sigma_line.animate.put_start_and_end_on(WN.get_edge_center(RIGHT), sigma.get_edge_center(LEFT) + LEFT),
-                  covariance_line.animate.put_start_and_end_on(WN.get_edge_center(RIGHT), covariance.get_edge_center(LEFT) + LEFT + DOWN),
+        self.play(total_windows.animate.shift(LEFT*1.2), WN_label.animate.shift(LEFT*1.2),
+                  mu_line.animate.put_start_and_end_on(WN.get_edge_center(RIGHT) + LEFT*1.2, luminance.get_edge_center(LEFT)),
+                  sigma_line.animate.put_start_and_end_on(WN.get_edge_center(RIGHT) + LEFT*1.2, contrast.get_edge_center(LEFT)),
+                  covariance_line.animate.put_start_and_end_on(WN.get_edge_center(RIGHT) + LEFT*1.2, sigma_xy.get_edge_center(LEFT)),
                   Transform(mu, luminance), Transform(sigma, contrast), Transform(covariance, sigma_xy))
         self.wait(2)
-
         self.play(Transform(mu, l_comp), Transform(sigma, c_comp), Transform(covariance, s_comp))
         self.wait(2)
-
-        self.play(total_windows.animate.shift(LEFT*1.2), sigma_line.animate.shift(LEFT*1.2), WN_label.animate.shift(LEFT*1.2), 
-                  Uncreate(mu), Transform(sigma, ssim), Uncreate(covariance), Uncreate(bottom_message),
+        self.play(Uncreate(mu), Transform(sigma, ssim), Uncreate(covariance), Uncreate(bottom_message),
+                  sigma_line.animate.put_start_and_end_on(WN.get_edge_center(RIGHT) + LEFT*1.2, ssim.get_edge_center(LEFT)),
                   FadeOut(mu_line), FadeOut(covariance_line))
         self.play(Write(ssim_cond))
         self.wait(2)
-
         self.play(Uncreate(ssim_cond), FadeOut(total_windows), FadeOut(WN_label), FadeOut(sigma_line), Transform(sigma, mssim))
         self.wait(2)
 
@@ -392,7 +382,7 @@ class OverviewOne(Scene):
         LR_label = Text("Low Res").scale(0.6)
         LR_label.move_to(LR)
 
-        F_mapping = Circle(color=RED, fill_opacity=0.5).scale(0.5)
+        F_mapping = Circle(color=ORANGE, fill_opacity=0.5).scale(0.5)
         F_mapping_label = Text("F", color=WHITE, slant=ITALIC).scale(0.6)
 
         q_mark = MathTex(r"?", font_size=64)
@@ -403,8 +393,8 @@ class OverviewOne(Scene):
         HR_label = Text("High Res").scale(0.6)
         HR_label.move_to(HR)
 
-        line_1 = DashedLine(LR.get_edge_center(RIGHT), F_mapping.get_edge_center(LEFT))
-        line_2 = DashedLine(F_mapping.get_edge_center(RIGHT), HR.get_edge_center(LEFT))
+        line_1 = Line(LR.get_edge_center(RIGHT), F_mapping.get_edge_center(LEFT))
+        line_2 = Line(F_mapping.get_edge_center(RIGHT), HR.get_edge_center(LEFT))
 
         self.play(Write(degredation), Write(regeneration))
         self.play(degredation.animate.scale(0.8), regeneration.animate.scale(0.8))
@@ -527,7 +517,7 @@ class ConvNet(ThreeDScene):
 
         #define feature_map_ind_group
         feature_map_ind_group = VGroup()
-
+        
         #first conv layer
         for y in range(11):
             for x in range(10):
@@ -543,6 +533,7 @@ class ConvNet(ThreeDScene):
 
             self.play(conv_group.animate.shift(LEFT*10*CONV_SHIFT_H), run_time=0.01)
             self.play(conv_group.animate.shift(DOWN*CONV_SHIFT_V), run_time=0.01)
+        
         self.play(Uncreate(conv_group))
         self.play(FadeOut(rgb_group))
         self.play(FadeOut(feature_map_ind_group), FadeIn(feature_map_group))
@@ -613,10 +604,21 @@ class ConvNet(ThreeDScene):
         self.wait()
         self.play(Uncreate(array_label), array_group.animate.shift(LEFT*3))
 
-        complete_CNET_message = MathTex(r"\rightarrow NN \rightarrow output", font_size=64)
-        complete_CNET_message.next_to(array_group, RIGHT, buff=0.5)
+        NN = Circle(color=ORANGE, fill_opacity=0.5).scale(0.5)
+        NN_label = Text("NN").scale(0.8)
+        NN_label.move_to(NN)
 
-        self.play(Write(complete_CNET_message))
+        HR_output = Square(color=BLUE, fill_opacity=0.5)
+        HR_output.shift(RIGHT*3)
+        HR_label = Text("HR Output").scale(0.6)
+        HR_label.move_to(HR_output)
+
+        array_to_NN = Line(ORIGIN+LEFT*2.5, NN.get_edge_center(LEFT))
+        NN_to_output = Line(NN.get_edge_center(RIGHT), HR_output.get_edge_center(LEFT))
+
+        self.play(FadeIn(NN, NN_label))
+        self.play(Create(array_to_NN))
+        self.play(Create(NN_to_output), FadeIn(HR_output, HR_label))
         self.wait()
 
 class SparseCoding(Scene):
@@ -670,8 +672,11 @@ class SparseCoding(Scene):
 
         self.play(FadeIn(brace_group))
         self.play(FadeIn(extraction_arrow))
-        for comp in dictionary:
-            self.play(FadeIn(comp), run_time=0.5)
+        self.play(FadeIn(comp_1))
+        self.play(FadeIn(comp_2))
+        self.play(Write(comp_skip))
+        self.play(FadeIn(comp_3))
+        self.play(FadeIn(comp_4))
         self.wait()
         self.play(FadeOut(brace_group), FadeOut(extraction_arrow), FadeOut(dictionary), willy.animate.scale(0.8))
 
@@ -679,7 +684,6 @@ class SparseCoding(Scene):
         decomposition.shift(RIGHT*1.5)
 
         self.play(Write(decomposition))
-
 
 class NetworkPlan(Scene):
     def construct(self):
