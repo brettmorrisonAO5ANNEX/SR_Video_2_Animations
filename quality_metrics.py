@@ -131,23 +131,23 @@ class QualityMetrics(Scene):
                   FadeOut(W3_label), FadeOut(W4_label), Transform(total_windows, WN))
         self.play(Write(bottom_message), Write(WN_label))
 
-        sigma = MathTex(r"\sigma_x, \sigma_y", font_size=64, color=GREEN)
+        sigma = MathTex(r"\sigma_x, \sigma_y", font_size=64, color=WHITE)
         sigma.shift(RIGHT*2)
         sigma_box = SurroundingRectangle(sigma, color=GREEN, fill_opacity=0.5)
         sigma_box.move_to(sigma)
-        sigma_group = VGroup(sigma, sigma_box)
+        sigma_group = VGroup(sigma_box, sigma)
 
-        mu = MathTex(r"\mu_x, \mu_y", font_size=64, color=RED)
+        mu = MathTex(r"\mu_x, \mu_y", font_size=64, color=WHITE)
         mu.next_to(sigma, UP, aligned_edge=LEFT, buff=0.5)
         mu_box = SurroundingRectangle(mu, color=RED, fill_opacity=0.5)
         mu_box.move_to(mu)
-        mu_group = VGroup(mu, mu_box)
+        mu_group = VGroup(mu_box, mu)
 
-        covariance = MathTex(r"\sigma_{xy}", font_size=64, color=BLUE)
+        covariance = MathTex(r"\sigma_{xy}", font_size=64, color=WHITE)
         covariance.next_to(sigma, DOWN, aligned_edge=LEFT, buff=0.5)
         covariance_box = SurroundingRectangle(covariance, color=BLUE, fill_opacity=0.5)
         covariance_box.move_to(covariance)
-        covariance_group = VGroup(covariance, covariance_box)
+        covariance_group = VGroup(covariance_box, covariance)
 
         START_POINT = WN.get_edge_center(RIGHT)
 
@@ -163,43 +163,59 @@ class QualityMetrics(Scene):
         self.play(FadeIn(covariance_group))
         self.wait(2)
 
-        contrast = MathTex(r"\sigma_{\{x,y\}} = \sqrt{\frac{1}{N-1}\sum_{i=1}^{N}(\{x,y\}_i - \mu_{\{x,y\}})^2}", font_size=36, color=GREEN)
+        contrast = MathTex(r"\sigma_{\{x,y\}} = \sqrt{\frac{1}{N-1}\sum_{i=1}^{N}(\{x,y\}_i - \mu_{\{x,y\}})^2}", font_size=36, color=WHITE)
         contrast_box = SurroundingRectangle(contrast, color=GREEN, fill_opacity=0.5)
-        contrast_group = VGroup(contrast, contrast_box)
+        contrast_group = VGroup(contrast_box, contrast)
 
-        luminance = MathTex(r"\mu_{\{x,y\}} = \frac{1}{N}\sum_{i=1}^N\{x,y\}_i", font_size=36, color=RED)
+        luminance = MathTex(r"\mu_{\{x,y\}} = \frac{1}{N}\sum_{i=1}^N\{x,y\}_i", font_size=36, color=WHITE)
         luminance_box = SurroundingRectangle(luminance, color=RED, fill_opacity=0.5)
-        luminance_group = VGroup(luminance, luminance_box)
+        luminance_group = VGroup(luminance_box, luminance)
         
-        sigma_xy = MathTex(r"\sigma_{xy} = \frac{1}{N-1}\sum_{i=1}^{N}(x_i - \mu_i)(y_i - \mu_y)", font_size=36, color=BLUE)
+        sigma_xy = MathTex(r"\sigma_{xy} = \frac{1}{N-1}\sum_{i=1}^{N}(x_i - \mu_i)(y_i - \mu_y)", font_size=36, color=WHITE)
         sigma_box = SurroundingRectangle(sigma_xy, color=BLUE, fill_opacity=0.5)
-        sigma_group = VGroup(sigma_xy, sigma_box)
+        sigma_xy_group = VGroup(sigma_box, sigma_xy)
 
-        contrast_group.shift(RIGHT*3)
+        contrast_group.shift(RIGHT*2)
         luminance_group.next_to(contrast_group, UP, aligned_edge=LEFT, buff=0.5)
-        sigma_group.next_to(contrast_group, DOWN, aligned_edge=LEFT, buff=0.5)
+        sigma_xy_group.next_to(contrast_group, DOWN, aligned_edge=LEFT, buff=0.5)
 
-        self.play(FadeIn(luminance_group), FadeIn(contrast_group), FadeIn(sigma_group))
+        START_POINT += LEFT*2.5
+
+        self.play(total_windows.animate.shift(LEFT*2.5), WN_label.animate.shift(LEFT*2.5),
+                  mu_line.animate.put_start_and_end_on(START_POINT, luminance_box.get_edge_center(LEFT)),
+                  sigma_line.animate.put_start_and_end_on(START_POINT, contrast_box.get_edge_center(LEFT)),
+                  covariance_line.animate.put_start_and_end_on(START_POINT, sigma_box.get_edge_center(LEFT)),
+                  Transform(mu_group, luminance_group), 
+                  Transform(sigma_group, contrast_group), 
+                  Transform(covariance_group, sigma_xy_group))
+        self.wait(2)
         
+        c_comp = MathTex(r"c(x,y) = \frac{2\sigma_x\sigma_y + C_2}{{\sigma_x}^2 + {\sigma_y}^2 + C_2}", font_size=36, color=WHITE)
+        c_comp_box = SurroundingRectangle(c_comp, color=GREEN, fill_opacity=0.5)
+        c_comp_group = VGroup(c_comp_box, c_comp)
 
-        #self.play(total_windows.animate.shift(LEFT*1.2), 
-        #          mu_line.animate.put_start_and_end_on(START_POINT, ),
-         #         sigma_line.animate.put_start_and_end_on(START_POINT, ),
-         #         covariance_line.animate.put_start_and_end_on(START_POINT, ))
+        l_comp = MathTex(r"l(x,y) = \frac{2\mu_x\mu_y + C_1}{{\mu_x}^2 + {\mu_y}^2 + C_1}", font_size=36, color=WHITE)
+        l_comp_box = SurroundingRectangle(c_comp, color=RED, fill_opacity=0.5)
+        l_comp_group = VGroup(l_comp_box, l_comp)
 
+        s_comp = MathTex(r"s(x,y) = \frac{\sigma_{xy} + C_3}{\sigma_x\sigma_y + C_3}", font_size=36, color=WHITE)
+        s_comp_box = SurroundingRectangle(s_comp, color=BLUE, fill_opacity=0.5)
+        s_comp_group = VGroup(s_comp_box, s_comp)
 
+        c_comp_group.shift(RIGHT*2)
+        l_comp_group.next_to(c_comp_group, UP, aligned_edge=LEFT, buff=0.5)
+        s_comp_group.next_to(c_comp_group, DOWN, aligned_edge=LEFT, buff=0.5)
 
+        START_POINT += RIGHT*1
 
-        """
-        c_comp = MathTex(r"c(x,y) = \frac{2\sigma_x\sigma_y + C_2}{{\sigma_x}^2 + {\sigma_y}^2 + C_2}", font_size=36, color=GREEN)
-        #shift right here if necessary
-        c_comp.shift(RIGHT*1.5)
-        
-        l_comp = MathTex(r"l(x,y) = \frac{2\mu_x\mu_y + C_1}{{\mu_x}^2 + {\mu_y}^2 + C_1}", font_size=36, color=RED)
-        l_comp.next_to(c_comp, UP*4.2, aligned_edge=LEFT)
-        
-        s_comp = MathTex(r"s(x,y) = \frac{\sigma_{xy} + C_3}{\sigma_x\sigma_y + C_3}", font_size=36, color=BLUE)
-        s_comp.next_to(c_comp, DOWN*4.2, aligned_edge=LEFT)
+        self.play(total_windows.animate.shift(RIGHT*1), WN_label.animate.shift(RIGHT*1),
+                  mu_line.animate.put_start_and_end_on(START_POINT, l_comp_box.get_edge_center(LEFT)),
+                  sigma_line.animate.put_start_and_end_on(START_POINT, c_comp_box.get_edge_center(LEFT)),
+                  covariance_line.animate.put_start_and_end_on(START_POINT, s_comp_box.get_edge_center(LEFT)),
+                  Transform(mu_group, l_comp_group), 
+                  Transform(sigma_group, c_comp_group), 
+                  Transform(covariance_group, s_comp_group))
+        self.wait(2)
 
         tex_1 = MathTex(r"SSIM = [", font_size=36)
         tex_2 = MathTex("l(x,y)", font_size=36, color=RED)
@@ -209,27 +225,22 @@ class QualityMetrics(Scene):
         tex_6 = MathTex("s(x,y)", font_size=36, color=BLUE)
         tex_7 = MathTex(r"]^{\gamma}", font_size=36)
         ssim = VGroup(tex_1, tex_2, tex_3, tex_4, tex_5, tex_6, tex_7).arrange(RIGHT)
-        ssim.shift(RIGHT*2.7)
+        ssim.shift(RIGHT*2)
+        ssim_box = SurroundingRectangle(ssim, color=WHITE, fill_opacity=0)
+        ssim_group = VGroup(ssim_box, ssim)
         
         ssim_cond = MathTex(r"where\ (\alpha, \beta, \gamma) > 0", font_size=32, color=YELLOW)
         ssim_cond.move_to(bottom_message)
+        
+        self.play(FadeOut(mu_group), Transform(sigma_group, ssim_group), FadeOut(covariance_group), Uncreate(bottom_message),
+                  mu_line.animate.put_start_and_end_on(START_POINT, ssim_box.get_edge_center(LEFT)),
+                  sigma_line.animate.put_start_and_end_on(START_POINT, ssim_box.get_edge_center(LEFT)),
+                  covariance_line.animate.put_start_and_end_on(START_POINT, ssim_box.get_edge_center(LEFT)))
+        self.play(Write(ssim_cond))
+        self.wait(2)
 
         mssim = MathTex(r"MSSIM(X,Y) = \frac{1}{M}\sum_{j=1}^{M}SSIM(x_j, y_j)", font_size=64)
 
-        
-        self.play(total_windows.animate.shift(LEFT*1.2), WN_label.animate.shift(LEFT*1.2),
-                  mu_line.animate.put_start_and_end_on(WN.get_edge_center(RIGHT) + LEFT*1.2, luminance.get_edge_center(LEFT)),
-                  sigma_line.animate.put_start_and_end_on(WN.get_edge_center(RIGHT) + LEFT*1.2, contrast.get_edge_center(LEFT)),
-                  covariance_line.animate.put_start_and_end_on(WN.get_edge_center(RIGHT) + LEFT*1.2, sigma_xy.get_edge_center(LEFT)),
-                  Transform(mu, luminance), Transform(sigma, contrast), Transform(covariance, sigma_xy))
+        self.play(FadeOut(total_windows, WN_label, mu_line, sigma_line, covariance_line, sigma_group, ssim_cond))
+        self.play(Write(mssim))
         self.wait(2)
-        self.play(Transform(mu, l_comp), Transform(sigma, c_comp), Transform(covariance, s_comp))
-        self.wait(2)
-        self.play(Uncreate(mu), Transform(sigma, ssim), Uncreate(covariance), Uncreate(bottom_message),
-                  sigma_line.animate.put_start_and_end_on(WN.get_edge_center(RIGHT) + LEFT*1.2, ssim.get_edge_center(LEFT)),
-                  FadeOut(mu_line), FadeOut(covariance_line))
-        self.play(Write(ssim_cond))
-        self.wait(2)
-        self.play(Uncreate(ssim_cond), FadeOut(total_windows), FadeOut(WN_label), FadeOut(sigma_line), Transform(sigma, mssim))
-        self.wait(2)
-        """
