@@ -1,0 +1,4 @@
+# This file is used internally by FFMPEG.
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/title_cards/1080p60/partial_movie_files/Connecting/3529212410_1761945133_223132457.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/title_cards/1080p60/partial_movie_files/Connecting/3040924799_1704852926_3242777912.mp4'
+file 'file:/Users/brettmorrison/Desktop/project/media/videos/title_cards/1080p60/partial_movie_files/Connecting/3040924799_280561552_4293662080.mp4'
