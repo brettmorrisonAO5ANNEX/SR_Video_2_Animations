@@ -6,6 +6,27 @@ Willy_square = ImageMobject("assets/Willy-Square.png").scale(0.1)
 
 class QualityMetrics(Scene):
     def construct(self):  
+        mse_tag = Text("1. MSE", font_size=64)
+        psnr_tag = Text("2. PSNR", font_size=64)
+        ssim_tag = Text("3. SSIM", font_size=64)
+
+        mse_tag.next_to(psnr_tag, UP, buff=0.5, aligned_edge=LEFT)
+        ssim_tag.next_to(psnr_tag, DOWN, buff=0.5, aligned_edge=LEFT)
+
+        self.play(Write(mse_tag))
+        self.wait()
+        self.play(Write(psnr_tag))
+        self.wait()
+        self.play(Write(ssim_tag))
+        self.wait()
+
+        mse_psnr_group = VGroup(mse_tag, psnr_tag)
+        group_box = SurroundingRectangle(mse_psnr_group, color=WHITE, fill_opacity=0)
+
+        self.play(FadeIn(group_box))
+        self.wait()
+        self.play(FadeOut(mse_tag, psnr_tag, ssim_tag, group_box))
+
         Loc_Willy_standard = Willy_standard
         Loc_Willy_pixelated = Willy_pixelated
         Loc_Willy_pixelated.shift(RIGHT*4)  
